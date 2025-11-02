@@ -1,0 +1,96 @@
+.
+├── arbre.txt
+├── docs
+│   ├── decisions
+│   ├── regles
+│   │   ├── exemple.yaml
+│   │   └── reforme-x.yaml
+│   └── schemas
+│       ├── regles.schema.json
+│       └── regles.schema.yaml
+├── env
+│   └── dev
+│       ├── bin
+├── infra
+│   └── compose
+│       ├── docker-compose.dev.yml
+│       └── traefik
+├── outils
+│   └── scripts
+│       └── test_api.sh
+├── packages
+│   ├── api
+│   │   ├── api
+│   │   │   ├── __init__.py
+│   │   │   ├── main.py
+│   │   │   └── __pycache__
+│   │   │       ├── __init__.cpython-312.pyc
+│   │   │       └── main.cpython-312.pyc
+│   │   └── requirements.txt
+│   ├── app-joueurs
+│   │   ├── next-env.d.ts
+│   │   ├── node_modules
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── src
+│   │   │   └── pages
+│   │   │       └── index.tsx
+│   │   └── tsconfig.json
+│   ├── cli-jeu
+│   │   ├── pyproject.toml
+│   │   └── src
+│   │       ├── cli_jeu
+│   │       │   ├── adaptateur.py
+│   │       │   ├── main.py
+│   │       │   ├── persistence.py
+│   │       └── cli_jeu.egg-info
+│   │           ├── dependency_links.txt
+│   │           ├── entry_points.txt
+│   │           ├── PKG-INFO
+│   │           ├── requires.txt
+│   │           ├── SOURCES.txt
+│   │           └── top_level.txt
+│   ├── monitor-web
+│   │   ├── next-env.d.ts
+│   │   ├── node_modules
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── public
+│   │   │   ├── favicon.ico
+│   │   │   └── favicon.png
+│   │   ├── src
+│   │   │   └── pages
+│   │   │       └── index.tsx
+│   │   └── tsconfig.json
+│   ├── moteur-jeu
+│   │   └── src
+│   │       └── moteur_jeu
+│   │           ├── __init__.py
+│   │           ├── moteur.py
+│   │           ├── persistence.py
+│   │           ├── __pycache__
+│   │           │   ├── __init__.cpython-312.pyc
+│   │           │   ├── moteur.cpython-312.pyc
+│   │           │   ├── persistence.cpython-312.pyc
+│   │           │   ├── regles_loader.cpython-312.pyc
+│   │           │   └── replay.cpython-312.pyc
+│   │           ├── regles_loader.py
+│   │           └── replay.py
+│   └── worker
+├── pyproject.toml
+├── README.md
+├── structure.sh
+└── tests
+    ├── integra
+    └── unitaires
+        ├── test_limite_tours.py
+        ├── test_moteur_base.py
+        ├── test_persistence.py
+        ├── test_perturbations.py
+        ├── test_phases.py
+        ├── test_preconditions.py
+        ├── test_regles_yaml.py
+        ├── test_replay.py
+        └── test_victoires.py
+
+433 directories, 4057 files

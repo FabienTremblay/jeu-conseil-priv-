@@ -1,0 +1,9 @@
+version: 1
+phases: [definition_situation, negotiation, finalisation]
+cartes:
+  - id: perturbation_retard
+    cout_attention: 1
+    effet: "retarde le négociateur ciblé d'un tour"
+victoire:
+  contentieux_resolus_min: 1
+  classement_points: [3, 2, 1]

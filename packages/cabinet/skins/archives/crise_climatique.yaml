@@ -1,0 +1,45 @@
+version: 3
+axes_tension:
+  - { id: climat, valeur_init: 4, seuil_crise: 9, poids: 1.2 }
+  - { id: economie, valeur_init: 3, seuil_crise: 8, poids: 1.0 }
+  - { id: cohesion, valeur_init: 3, seuil_crise: 8, poids: 1.0 }
+
+economie_initiale:
+  taux_impot_part: 0.22
+  taux_impot_ent:  0.19
+  taux_redevances: 0.11
+  taux_interet:    0.03
+  base_part:       130000
+  base_ent:        100000
+  base_ressources: 45000
+  depenses_postes: { sante: 950, securite: 710, social: 650, transition: 300 }
+  dette: 14000
+  capacite_max: 3
+  efficience: 1.0
+
+pioche: { main_taille_init: 4, cartes_par_tour: 2, main_max: 7, enforce_main: true }
+
+cartes:
+  - id: taxe_carbone
+    type: mesure
+    copies: 3
+    tags: [climat, fiscal]
+    charge_admin: 2
+    effets:
+      - { type: tension_axis_delta, params: { axis: climat, delta: -2 } }
+      - { type: tension_axis_delta, params: { axis: cohesion, delta: { discrete: [0, +1], weights: [1,2] } } }
+      - { type: depenses_poste_delta, params: { poste: transition, delta: +200 } }
+
+perturbateurs_tour:
+  - id: canicule
+    copies: 2
+    tags: [climat]
+    effets:
+      - { type: tension_axis_delta, params: { axis: climat, delta: { uniform: [ +1, +3 ] } } }
+      - { type: capital_politique_delta, params: { cible: collectif, delta: -1 } }
+
+ponderations_dynamiques:
+  events:
+    - when: { axis: climat, op: '>=', value: 6 }
+      applies_to: { tags: ['climat'] }
+      factor: 1.6

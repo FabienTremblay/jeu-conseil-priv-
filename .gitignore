@@ -1,0 +1,17 @@
+.venv/
+env/
+__pycache__/
+*.pyc
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.cache/
+*.log
+.avpol/
+*.pkl
+*.jsonl
+*.sqlite3
+.idea/
+.vscode/

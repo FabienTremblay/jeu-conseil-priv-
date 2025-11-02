@@ -1,0 +1,13 @@
+# packages/moteur-jeu/pyproject.toml
+[project]
+name = "moteur-jeu"                 # nom du paquet distribué (avec tiret)
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["src"]                      # important: ton code est dans src/
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+

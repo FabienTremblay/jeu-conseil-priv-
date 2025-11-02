@@ -1,0 +1,2 @@
+[console_scripts]
+avpol = cli_jeu.main:app

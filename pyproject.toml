@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "jeu-aventure-politique"
+version = "0.1.0"
+description = "Monorepo du jeu d’aventure politique"
+authors = {"name" = "Fabien Tremblay", "email"="fabientremblay@hotmail.com"}
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.6.8"
+black = "^24.8.0"
+pytest = "^8.3.0"
+coverage = "^7.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"

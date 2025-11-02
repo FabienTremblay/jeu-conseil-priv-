@@ -1,0 +1,21 @@
+# docs/schemas/regles.schema.yaml
+# But: documenter la structure attendue pour des règles de jeu.
+
+version: "1" # string (obligatoire)
+actions: # liste d’actions déclarables
+  - name: string # identifiant d'action (ex.: "proposer_reforme")
+    attention_cost: int # coût en points d'attention (défaut: 1)
+    conditions: # (optionnel) simple garde-fou minimal
+      min_attention: int # ex.: 1
+    effects: # liste d'effets appliqués si l'action passe
+      - type: string # "tension_delta" | "emit_event" | "contentieux_delta"
+        params: # dict selon le type
+          # tension_delta: { delta: int }
+          # emit_event:   { event_type: str, data: dict }
+          # contentieux_delta: { id: str, field: str, delta: int }
+
+contentieux: # (optionnel) état initial de contentieux
+  - id: string # ex.: "reforme_x"
+    titre: string
+    etat_initial: # champs libres pour l'état
+      soutien: int # ex.: 0

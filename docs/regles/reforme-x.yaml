@@ -1,0 +1,179 @@
+version: "1"
+name: "Réforme X — set étendu"
+
+phases:
+  - { name: definition }
+  - { name: negociation }
+  - { name: finalisation }
+
+actions:
+  # ======== DÉFINITION ========
+  - id: proposer_reforme
+    allowed_phases: [definition]
+    attention_cost: 1
+    effects:
+      - {
+          type: emit_event,
+          params: { event_type: "reforme_proposee", data: { id: "reforme_x" } },
+        }
+      - {
+          type: contentieux_delta,
+          params: { id: "reforme_x", field: "soutien", delta: 1 },
+        }
+      - { type: tension_delta, params: { delta: 1 } }
+
+  - id: cartographier_enjeux
+    allowed_phases: [definition]
+    attention_cost: 1
+    effects:
+      - {
+          type: emit_event,
+          params: { event_type: "enjeux_cartographies", data: {} },
+        }
+      - { type: tension_delta, params: { delta: -1 } }
+
+  - id: ouvrir_negociation
+    allowed_phases: [definition]
+    attention_cost: 0
+    preconditions:
+      phase_in: [definition]
+    effects:
+      - { type: phase_set, params: { name: "negociation" } }
+
+  # ======== NÉGOCIATION ========
+  - id: faire_campagne
+    allowed_phases: [definition, negociation]
+    attention_cost: 1
+    effects:
+      - {
+          type: contentieux_delta,
+          params: { id: "reforme_x", field: "soutien", delta: 2 },
+        }
+      - { type: tension_delta, params: { delta: 1 } }
+      - {
+          type: emit_event,
+          params:
+            { event_type: "campagne_menee", data: { cible: "reforme_x" } },
+        }
+
+  - id: negocier_compromis
+    allowed_phases: [negociation]
+    attention_cost: 1
+    preconditions:
+      contentieux_gte:
+        id: "reforme_x"
+        field: "soutien"
+        value: 1
+    effects:
+      - {
+          type: contentieux_delta,
+          params: { id: "reforme_x", field: "soutien", delta: 1 },
+        }
+      - { type: tension_delta, params: { delta: -1 } }
+      - {
+          type: emit_event,
+          params: { event_type: "compromis_trouve", data: {} },
+        }
+
+  - id: fuite_mediatique
+    allowed_phases: [negociation]
+    attention_cost: 1
+    preconditions:
+      role_in: ["saboteur"]
+    effects:
+      - { type: tension_delta, params: { delta: 2 } }
+      - {
+          type: emit_event,
+          params: { event_type: "fuite_mediatique", data: {} },
+        }
+
+  - id: lobby_prive
+    allowed_phases: [negociation]
+    attention_cost: 1
+    preconditions:
+      role_in: ["reformateur"]
+    effects:
+      - {
+          type: contentieux_delta,
+          params: { id: "reforme_x", field: "soutien", delta: 1 },
+        }
+      - { type: emit_event, params: { event_type: "lobby_prive", data: {} } }
+
+  - id: motion_obstruction
+    allowed_phases: [negociation]
+    attention_cost: 1
+    preconditions:
+      role_in: ["saboteur"]
+    effects:
+      - { type: tension_delta, params: { delta: 1 } }
+      - { type: attention_delta, params: { target: "adversaire", delta: -1 } }
+      - { type: emit_event, params: { event_type: "obstruction", data: {} } }
+
+  - id: consultation_publique
+    allowed_phases: [negociation]
+    attention_cost: 1
+    effects:
+      - { type: random_perturbation, params: { name: "avis_public" } }
+
+  # ======== FINALISATION ========
+  - id: appel_vote_final
+    allowed_phases: [finalisation]
+    attention_cost: 1
+    preconditions:
+      contentieux_gte: { id: "reforme_x", field: "soutien", value: 5 }
+    effects:
+      - { type: emit_event, params: { event_type: "vote_tenu", data: {} } }
+      - { type: random_perturbation, params: { name: "vote" } }
+
+  - id: cloturer_avec_amendement
+    allowed_phases: [finalisation]
+    attention_cost: 1
+    effects:
+      - { type: tension_delta, params: { delta: -1 } }
+      - {
+          type: emit_event,
+          params: { event_type: "amendement_final", data: {} },
+        }
+
+perturbations:
+  # Règles RNG nommées (utilisées par random_perturbation)
+  - id: "avis_public"
+    weight: 1
+    effects:
+      - {
+          type: emit_event,
+          params: { event_type: "avis_public_publie", data: {} },
+        }
+      - {
+          type: contentieux_delta,
+          params: { id: "reforme_x", field: "soutien", delta: 1 },
+        }
+
+  - id: "avis_public"
+    weight: 1
+    effects:
+      - {
+          type: emit_event,
+          params: { event_type: "avis_public_defavorable", data: {} },
+        }
+      - {
+          type: contentieux_delta,
+          params: { id: "reforme_x", field: "soutien", delta: -1 },
+        }
+      - { type: tension_delta, params: { delta: 1 } }
+
+  - id: "vote"
+    weight: 1
+    effects:
+      - { type: emit_event, params: { event_type: "vote_reussi", data: {} } }
+      - { type: phase_set, params: { name: "finalisation" } }
+      - {
+          type: contentieux_delta,
+          params: { id: "reforme_x", field: "soutien", delta: 1 },
+        }
+
+  - id: "vote"
+    weight: 1
+    effects:
+      - { type: emit_event, params: { event_type: "vote_echoue", data: {} } }
+      - { type: tension_delta, params: { delta: 1 } }

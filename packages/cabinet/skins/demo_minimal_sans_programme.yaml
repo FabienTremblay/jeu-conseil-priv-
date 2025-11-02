@@ -1,0 +1,44 @@
+partie_id: demo-001
+tour_initial: 1
+capital_collectif: 0
+version: 1
+
+axes_tension:
+  - id: sante
+    valeur: 5
+    seuil_crise: 2
+    poids: 1.2
+  - id: securite
+    valeur: 6
+    seuil_crise: 3
+
+economie_initiale:
+  taux_impot_part: 0.30
+  taux_impot_ent: 0.25
+  taux_redevances: 0.05
+  taux_interet: 0.02
+  base_part: 1000
+  base_ent: 800
+  base_ressources: 500
+  depenses_postes: { sante: 300, defense: 200 }
+  dette: 1200
+  capacite_max: 5
+  efficience: 0.85
+
+joueurs:
+  J1: { nom: "Joueur 1", capital: 0 }
+  J2: { nom: "Opposition", capital: 2}
+
+deck_global: { pioche: ["C003","C004","C005"], defausse: [] }
+deck_events: { pioche: ["E001","E002"], defausse: [] }
+
+cartes_def:
+  C001: { nom: "Augmenter budget santé", type: "mesure" }
+  C002: { nom: "Amendement procédure X", type: "amendement" }
+  C003: { nom: "Mesure Y", type: "mesure" }
+
+perturbateurs_tour:
+  - type: crise
+    cible: sante
+    intensite: 2
+

@@ -1,0 +1,104 @@
+version: "1"
+
+phases:
+  - name: definition
+  - name: negociation
+  - name: finalisation
+
+contentieux:
+  - id: "reforme_x"
+    titre: "Réforme X"
+    etat_initial: { soutien: 0 }
+
+actions:
+  # Action système pour changer de phase (coût 0)
+  - name: "ouvrir_negociation"
+    attention_cost: 0
+    allowed_phases: ["definition"]
+    effects:
+      - type: "phase_set"
+        params: { name: "negociation" }
+      - type: "emit_event"
+        params: { event_type: "phase_changee", data: { phase: "negociation" } }
+
+  - name: "ouvrir_finalisation"
+    attention_cost: 0
+    allowed_phases: ["negociation"]
+    effects:
+      - type: "phase_set"
+        params: { name: "finalisation" }
+      - type: "emit_event"
+        params: { event_type: "phase_changee", data: { phase: "finalisation" } }
+
+  - name: "proposer_reforme"
+    attention_cost: 1
+    allowed_phases: ["definition"]
+    effects:
+      - type: "emit_event"
+        params: { event_type: "reforme_proposee", data: { id: "reforme_x" } }
+      - type: "contentieux_delta"
+        params: { id: "reforme_x", field: "soutien", delta: 1 }
+      - type: "tension_delta"
+        params: { delta: 1 }
+
+  - name: "faire_campagne"
+    attention_cost: 1
+    allowed_phases: ["negociation"]
+    effects:
+      - type: "contentieux_delta"
+        params: { id: "reforme_x", field: "soutien", delta: 2 }
+      - type: "tension_delta"
+        params: { delta: 1 }
+      - type: "emit_event"
+        params: { event_type: "campagne_menee", data: { cible: "reforme_x" } }
+
+  - name: "negocier_compromis"
+    attention_cost: 1
+    allowed_phases: ["negociation"]
+    conditions:
+      requires_event: "reforme_proposee"
+      requires_contentieux_gte: { id: "reforme_x", field: "soutien", value: 1 }
+    effects:
+      - type: "tension_delta"
+        params: { delta: -1 }
+      - type: "contentieux_delta"
+        params: { id: "reforme_x", field: "soutien", delta: 1 }
+      - type: "emit_event"
+        params: { event_type: "compromis_trouve", data: { id: "reforme_x" } }
+
+  - name: "tirer_perturbation"
+    attention_cost: 0
+    allowed_phases: ["negociation"]
+    effects:
+      - type: "random_perturbation" # choisit selon les poids
+        params: {}
+
+perturbations:
+  - id: "rumeur_negative"
+    weight: 1
+    only_role_tags: ["obstruction"] # ou: only_roles: ["saboteur"] / ["reformateur"] selon l’intention
+    effects:
+      - type: "tension_delta"
+        params: { delta: 1 }
+      - type: "emit_event"
+        params: { event_type: "rumeur_lancee", data: {} }
+      - type: "attention_delta"
+        params: { target: "auteur", delta: -1 }
+
+  - id: "moment_de_grace"
+    weight: 1
+    effects:
+      - type: "tension_delta"
+        params: { delta: -1 }
+      - type: "contentieux_delta"
+        params: { id: "reforme_x", field: "soutien", delta: 1 }
+      - type: "emit_event"
+        params: { event_type: "elan_populaire", data: {} }
+
+victoires:
+  - type: "contentieux_gte"
+    label: "Réforme X adoptée"
+    params: { id: "reforme_x", field: "soutien", value: 5 }
+  - type: "tension_gte"
+    label: "Crise politique"
+    params: { value: 8 }

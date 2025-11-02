@@ -1,0 +1,13 @@
+tree packages/cabinet
+packages/cabinet
+├── moteur
+│   ├── etat.py
+│   ├── factories.py
+├── schemas
+│   └── regles.schema.json
+├── skins
+│   └── demo_minimal.yaml
+└── tests
+    ├── integration
+    └── unit
+

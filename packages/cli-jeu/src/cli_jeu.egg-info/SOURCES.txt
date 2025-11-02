@@ -1,0 +1,10 @@
+pyproject.toml
+src/cli_jeu/adaptateur.py
+src/cli_jeu/main.py
+src/cli_jeu/persistence.py
+src/cli_jeu.egg-info/PKG-INFO
+src/cli_jeu.egg-info/SOURCES.txt
+src/cli_jeu.egg-info/dependency_links.txt
+src/cli_jeu.egg-info/entry_points.txt
+src/cli_jeu.egg-info/requires.txt
+src/cli_jeu.egg-info/top_level.txt

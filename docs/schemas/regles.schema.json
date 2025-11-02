@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Schema regles jeu politique v1",
+  "type": "object",
+  "required": ["version", "actions"],
+  "properties": {
+    "version": { "type": "string", "const": "1" },
+    "name": { "type": "string" },
+
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": { "name": { "type": "string" } },
+        "additionalProperties": false
+      }
+    },
+
+    "perturbations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "effects"],
+        "properties": {
+          "id": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0 },
+          "only_roles": { "type": "array", "items": { "type": "string" } },
+          "only_role_tags": { "type": "array", "items": { "type": "string" } },
+          "effects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": { "type": "string" },
+                "params": { "type": "object" }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "contentieux": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "titre"],
+        "properties": {
+          "id": { "type": "string" },
+          "titre": { "type": "string" },
+          "etat_initial": {
+            "type": "object",
+            "additionalProperties": {
+              "type": ["number", "string", "boolean", "integer"]
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "effects"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+
+          "attention_cost": { "type": "integer", "minimum": 0, "default": 1 },
+          "allowed_phases": { "type": "array", "items": { "type": "string" } },
+
+          "preconditions": {
+            "type": "object",
+            "properties": {
+              "phase_in": { "type": "array", "items": { "type": "string" } },
+              "role_in": { "type": "array", "items": { "type": "string" } },
+              "contentieux_gte": {
+                "type": "object",
+                "required": ["id", "field", "value"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "field": { "type": "string" },
+                  "value": { "type": "integer" }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+
+          "effects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "tension_delta",
+                    "emit_event",
+                    "contentieux_delta",
+                    "phase_set",
+                    "attention_delta",
+                    "random_perturbation",
+                    "apply_perturbation"
+                  ]
+                },
+                "params": { "type": "object" }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "titre"],
+        "properties": {
+          "id": { "type": "string" },
+          "titre": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "objectifs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "type", "points"],
+              "properties": {
+                "id": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "contentieux_gte",
+                    "contentieux_lte",
+                    "tension_gte",
+                    "tension_lte",
+                    "phase_is",
+                    "victoire_label_is",
+                    "defaite_label_is"
+                  ]
+                },
+                "params": { "type": "object" },
+                "points": { "type": "integer" },
+                "secret": { "type": "boolean", "default": true }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "evaluation": {
+      "type": "object",
+      "properties": {
+        "fin_auto": { "type": "boolean", "default": true }
+      },
+      "additionalProperties": false
+    },
+
+    "victoires": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "params"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["contentieux_gte", "tension_gte"]
+          },
+          "params": { "type": "object" },
+          "label": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

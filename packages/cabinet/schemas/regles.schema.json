@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cabinet v3",
+  "type": "object",
+  "required": ["version", "axes_tension", "economie_initiale", "perturbateurs_tour"],
+  "properties": {
+    "version": { "type": "integer", "minimum": 1 },
+    "axes_tension": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "description": "Identifiant unique de l'axe (ex: sante, securite, economie)",
+        "required": ["id", "seuil_crise"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "valeur_init": { "type": "integer", "minimum": 0, "maximum": 10, "description": "Valeur initiale de l'axe (0 à 10)" },
+          "seuil_crise": { "type": "integer", "minimum": 1, "maximum": 10, "description": "Seuil de déclenchement d'une crise" },
+          "poids": { "type": "number", "minimum": 0.0,
+            "maximum": 10.0,
+            "default": 1.0,
+            "description": "Poids relatif de l'axe dans les calculs globaux" 
+            }
+        }
+      }
+    },
+    "economie_initiale": {
+      "type": "object",
+      "required": ["taux_impot_part","taux_impot_ent","taux_redevances","taux_interet","base_part","base_ent","base_ressources","depenses_postes","dette","capacite_max"],
+      "properties": {
+        "taux_impot_part": { "type": "number", "minimum": 0 },
+        "taux_impot_ent": { "type": "number", "minimum": 0 },
+        "taux_redevances": { "type": "number", "minimum": 0 },
+        "taux_interet": { "type": "number", "minimum": 0 },
+        "base_part": { "type": "integer", "minimum": 0 },
+        "base_ent": { "type": "integer", "minimum": 0 },
+        "base_ressources": { "type": "integer", "minimum": 0 },
+        "depenses_postes": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "dette": { "type": "integer" },
+        "capacite_max": { "type": "integer", "minimum": 1 },
+        "efficience": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "regle_vote": { "type": "object" },
+    "contraintes": {
+      "type": "object",
+      "properties": {
+        "budget_min_solde": { "type": "integer" },
+        "capacite_admin_max": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": true
+    },
+
+    "perturbateurs_tour": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["crise", "accident", "guerre", "technologie", "economique", "autre"],
+            "description": "Type de perturbateur"
+          },
+          "cibles": { 
+            "type": "array", 
+            "items": { "type": "string"}, 
+            "minItems": 0,
+            "description": "Axe ou ressource affectée"
+          },
+          "intensite": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Intensité du perturbateur"
+          },
+          "duree": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Durée (en tours) de l'effet du perturbateur"
+          },
+          "effets": {
+            "type": "array",
+            "items": { "type":"object" },
+            "description": "Texte libre décrivant l'effet narratif ou mécanique"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+
+    "cartes": { "type": "array" }
+  },
+  "additionalProperties": true
+}
